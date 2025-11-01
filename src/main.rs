@@ -2,14 +2,18 @@ use std::io;
 
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use ratatui::{
+    DefaultTerminal, Frame,
     buffer::Buffer,
     layout::Rect,
     style::Stylize,
     symbols::border,
     text::{Line, Text},
     widgets::{Block, Paragraph, Widget},
-    DefaultTerminal, Frame,
 };
+
+use crate::clients::float_client;
+
+mod clients;
 
 #[derive(Debug, Default)]
 pub struct App {
@@ -18,7 +22,6 @@ pub struct App {
 }
 
 impl App {
-
     /// runs the application's main loop until the user quits
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         while !self.exit {
@@ -67,15 +70,15 @@ impl App {
     }
 
     fn self_log_time(&self) {
-        // Placeholder for logging time functionality
-        todo!("Need to implement logging")
+        let client = float_client::FloatClient::new();
+        client.authenticate();
     }
 }
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let title = Line::from(" LazyFloat ".bold());
-        
+
         let instructions = Line::from(vec![
             " Login ".into(),
             "L".green().bold(),
